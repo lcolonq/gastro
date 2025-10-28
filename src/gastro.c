@@ -112,10 +112,7 @@ static bool triangle_contains(gastro_vec3 *bary, gastro_vec2 x, gastro_vec2 p0, 
     gastro_fix64 p1p2 = compare_edge(x, p1, p2);
     gastro_fix64 p2p0 = compare_edge(x, p2, p0);
     gastro_fix64 area = compare_edge(p2, p0, p1);
-    if (area == 0) {
-        printf("area is zero goofball\n");
-        exit(1);
-    }
+    if (area == 0) return false;
     bary->x = gastro_fix_div(p1p2, area);
     bary->y = gastro_fix_div(p2p0, area);
     bary->z = gastro_fix_div(p0p1, area);
@@ -163,22 +160,23 @@ void gastro_draw_quad(gastro_ctx *ctx, gastro_color col, gastro_vec3 p0, gastro_
 
 void gastro_draw_cube(gastro_ctx *ctx, gastro_vec3 pos) {
     gastro_fix64 sz = gastro_fix_new(40);
-    /* gastro_vec3 p0 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z - sz)); */
-    /* gastro_vec3 p1 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z - sz)); */
-    /* gastro_vec3 p2 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z - sz)); */
-    /* gastro_vec3 p3 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z - sz)); */
-    /* gastro_vec3 p4 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z + sz)); */
-    /* gastro_vec3 p5 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z + sz)); */
-    /* gastro_vec3 p6 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z + sz)); */
-    /* gastro_vec3 p7 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z + sz)); */
-    gastro_vec3 p0 = gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z - sz);
-    gastro_vec3 p1 = gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z - sz);
-    gastro_vec3 p2 = gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z - sz);
-    gastro_vec3 p3 = gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z - sz);
-    gastro_vec3 p4 = gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z + sz);
-    gastro_vec3 p5 = gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z + sz);
-    gastro_vec3 p6 = gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z + sz);
-    gastro_vec3 p7 = gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z + sz);
+    gastro_fix64 zsz = gastro_fix_from_double(0.25);
+    gastro_vec3 p0 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z - zsz));
+    gastro_vec3 p1 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z - zsz));
+    gastro_vec3 p2 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z - zsz));
+    gastro_vec3 p3 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z - zsz));
+    gastro_vec3 p4 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z + zsz));
+    gastro_vec3 p5 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z + zsz));
+    gastro_vec3 p6 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z + zsz));
+    gastro_vec3 p7 = gastro_vec3_perspective(GASTRO_FIX_ONE, gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z + zsz));
+    /* gastro_vec3 p0 = gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z - sz); */
+    /* gastro_vec3 p1 = gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z - sz); */
+    /* gastro_vec3 p2 = gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z - sz); */
+    /* gastro_vec3 p3 = gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z - sz); */
+    /* gastro_vec3 p4 = gastro_vec3_new(pos.x - sz, pos.y - sz, pos.z + sz); */
+    /* gastro_vec3 p5 = gastro_vec3_new(pos.x + sz, pos.y - sz, pos.z + sz); */
+    /* gastro_vec3 p6 = gastro_vec3_new(pos.x + sz, pos.y + sz, pos.z + sz); */
+    /* gastro_vec3 p7 = gastro_vec3_new(pos.x - sz, pos.y + sz, pos.z + sz); */
     gastro_draw_quad(ctx, gastro_color_new(0xff, 0, 0, 0xff), p0, p1, p2, p3); /* front */
     gastro_draw_quad(ctx, gastro_color_new(0, 0xff, 0, 0xff), p1, p5, p6, p2); /* right */
     gastro_draw_quad(ctx, gastro_color_new(0, 0, 0xff, 0xff), p4, p0, p3, p7); /* left */

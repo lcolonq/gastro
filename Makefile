@@ -8,8 +8,8 @@ CC ?= gcc
 AR ?= ar
 CHK_SOURCES ?= $(SRCS)
 CPPFLAGS ?= -MMD -MP
-CFLAGS ?= --std=c89 -g -Ideps/ -Isrc/ -Wall -Wextra -Wpedantic -Wconversion -Wformat-security -Wshadow -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wnull-dereference -Wfloat-equal -Wundef -Wpointer-arith -Wbad-function-cast -Wlogical-op -Wmissing-braces -Wcast-align -Wstrict-overflow=5 -ftrapv -fsanitize=undefined
-LDFLAGS ?= -g -lraylib -lcolonq-qoi -fsanitize=undefined
+CFLAGS ?= --std=c89 -g -Ideps/ -Isrc/ -Wall -Wextra -Wpedantic -Wconversion -Wformat-security -Wshadow -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wnull-dereference -Wfloat-equal -Wundef -Wpointer-arith -Wbad-function-cast -Wlogical-op -Wmissing-braces -Wcast-align -Wstrict-overflow=5 -ftrapv
+LDFLAGS ?= -g -lraylib -lcolonq-qoi
 
 prefix ?= /usr/local
 exec_prefix ?= $(prefix)
@@ -18,6 +18,9 @@ includedir ?= $(prefix)/include
 libdir ?= $(exec_prefix)/lib
 
 .PHONY: all clean install check-syntax
+
+run: $(EXE)
+	./$(EXE)
 
 all: $(EXE) $(LIB)
 

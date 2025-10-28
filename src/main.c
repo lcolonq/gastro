@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
 
     InitWindow(800, 600, "test");
     {
+        i64 off = 0;
         Image im;
         Texture2D tex;
         im.data = ctx.pixels;
@@ -32,7 +33,15 @@ int main(int argc, char **argv) {
             /*     gastro_vec3_new(gastro_fix_new(70) + GASTRO_FIX_HALF, gastro_fix_new(80) + GASTRO_FIX_HALF, GASTRO_FIX_ONE), */
             /*     gastro_vec3_new(gastro_fix_new(10) + GASTRO_FIX_HALF, gastro_fix_new(80) + GASTRO_FIX_HALF, GASTRO_FIX_ONE) */
             /* ); */
-            gastro_draw_cube(&ctx, gastro_vec3_new(gastro_fix_new(50), gastro_fix_new(50), gastro_fix_new(50)));
+            gastro_draw_cube(&ctx, gastro_vec3_new(gastro_fix_new(50 + off), gastro_fix_new(100), gastro_fix_new(3)));
+            off += 1;
+            off %= 1000;
+            /* gastro_draw_triangle(&ctx, */
+            /*     gastro_color_new(0, 0xff, 0, 0xff), */
+            /*     gastro_vec3_new(gastro_fix_new(0) + GASTRO_FIX_HALF, gastro_fix_new(0) + GASTRO_FIX_HALF, gastro_fix_new(50)), */
+            /*     gastro_vec3_new(gastro_fix_new(50) + GASTRO_FIX_HALF, gastro_fix_new(50) + GASTRO_FIX_HALF, gastro_fix_new(50)), */
+            /*     gastro_vec3_new(gastro_fix_new(0) + GASTRO_FIX_HALF, gastro_fix_new(50) + GASTRO_FIX_HALF, gastro_fix_new(50)) */
+            /* ); */
             BeginDrawing();
             ClearBackground(RED);
             UpdateTexture(tex, ctx.pixels);
