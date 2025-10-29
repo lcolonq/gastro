@@ -1,0 +1,3 @@
+#+title: gastro
+
+fixed-point software rasterizer
