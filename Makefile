@@ -1,4 +1,4 @@
-SRCS := src/gastro.c
+SRCS := src/gastro.c src/trig.c
 OBJECTS := $(SRCS:src/%.c=build/%.o)
 HEADERS := $(wildcard src/*.h)
 EXE := gastro
