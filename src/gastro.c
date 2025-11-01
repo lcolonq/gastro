@@ -79,6 +79,15 @@ gastro_vec3 gastro_vec3_perspective(gastro_fix64 nearz, gastro_vec3 p) {
 gastro_fix64 gastro_vec3_bary_interpolate(gastro_vec3 bary, gastro_fix64 x, gastro_fix64 y, gastro_fix64 z) {
     return gastro_fix_mul(bary.x, x) + gastro_fix_mul(bary.y, y) + gastro_fix_mul(bary.z, z);
 }
+gastro_fix64 gastro_vec3_bary_interpolate_inv(gastro_vec3 bary, gastro_fix64 x, gastro_fix64 y, gastro_fix64 z) {
+    return gastro_fix_div(GASTRO_FIX_ONE, 
+        gastro_vec3_bary_interpolate(bary,
+            gastro_fix_div(GASTRO_FIX_ONE, x),
+            gastro_fix_div(GASTRO_FIX_ONE, y),
+            gastro_fix_div(GASTRO_FIX_ONE, z)
+        )
+    );
+}
 
 gastro_vec4 gastro_vec4_new(gastro_fix64 x, gastro_fix64 y, gastro_fix64 z, gastro_fix64 w) {
     gastro_vec4 ret;
@@ -228,7 +237,7 @@ static bool triangle_contains(gastro_vec3 *bary, gastro_vec2 x, gastro_vec2 p0, 
     bary->x = gastro_fix_div(p1p2, area);
     bary->y = gastro_fix_div(p2p0, area);
     bary->z = gastro_fix_div(p0p1, area);
-    return p0p1 < 0 && p1p2 < 0 && p2p0 < 0;
+    return p0p1 <= 0 && p1p2 <= 0 && p2p0 <= 0;
 }
 void gastro_render_triangle(gastro_ctx *ctx, gastro_program *p, gastro_vertex n0, gastro_vertex n1, gastro_vertex n2, i64 attrs_len) {
     /* assume clockwise winding order of points */
@@ -256,23 +265,30 @@ void gastro_render_triangle(gastro_ctx *ctx, gastro_program *p, gastro_vertex n0
             if (triangle_contains(&bary, centered, v0, v1, v2)) {
                 i64 a;
                 gastro_color col;
-                gastro_fix64 z = gastro_fix_div(GASTRO_FIX_ONE, 
-                    gastro_vec3_bary_interpolate(bary,
-                        gastro_fix_div(GASTRO_FIX_ONE, p0.z),
-                        gastro_fix_div(GASTRO_FIX_ONE, p1.z),
-                        gastro_fix_div(GASTRO_FIX_ONE, p2.z)
-                    )
-                );
+                gastro_fix64 z = gastro_vec3_bary_interpolate_inv(bary, p0.z, p1.z, p2.z);
                 gastro_vec3 interp_v = gastro_vec3_new(
                     gastro_vec3_bary_interpolate(bary, p0.x, p1.x, p2.x),
                     gastro_vec3_bary_interpolate(bary, p0.y, p1.y, p2.y),
                     z
                 );
                 for (a = 0; a < attrs_len; ++a) {
-                    attrs[a] = gastro_vec3_bary_interpolate(bary, n0.attrs[a], n1.attrs[a], n2.attrs[a]);
+                    gastro_fix64 n0z = gastro_fix_div(n0.attrs[a], p0.z);
+                    gastro_fix64 n1z = gastro_fix_div(n1.attrs[a], p1.z);
+                    gastro_fix64 n2z = gastro_fix_div(n2.attrs[a], p2.z);
+                    attrs[a] = gastro_fix_mul(
+                        z,
+                        gastro_vec3_bary_interpolate(bary, n0z, n1z, n2z)
+                    );
                 }
-                col = gastro_program_fragment(ctx, p, interp_v, attrs, attrs_len);
-                gastro_draw_pixel(ctx, col, z, x, y);
+                { /* actually draw the pixel */
+                    i64 idx = y * ctx->width + x;
+                    if (x < 0 || x >= ctx->width || y < 0 || y >= ctx->height) continue;
+                    if (z > ctx->depth[idx]) continue;
+                    col = gastro_program_fragment(ctx, p, interp_v, attrs, attrs_len);
+                    gastro_draw_pixel(ctx, col, z, x, y);
+                    ctx->pixels[idx] = col;
+                    ctx->depth[idx] = z;
+                }
             }
         }
     }

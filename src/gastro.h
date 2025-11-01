@@ -27,6 +27,7 @@ void gastro_vec3_print(gastro_vec3 v);
 gastro_vec2 gastro_vec3_xy(gastro_vec3 v);
 gastro_vec3 gastro_vec3_perspective(gastro_fix64 nearz, gastro_vec3 p);
 gastro_fix64 gastro_vec3_bary_interpolate(gastro_vec3 bary, gastro_fix64 x, gastro_fix64 y, gastro_fix64 z);
+gastro_fix64 gastro_vec3_bary_interpolate_inv(gastro_vec3 bary, gastro_fix64 x, gastro_fix64 y, gastro_fix64 z);
 typedef struct { gastro_fix64 x, y, z, w; } gastro_vec4;
 gastro_vec4 gastro_vec4_new(gastro_fix64 x, gastro_fix64 y, gastro_fix64 z, gastro_fix64 w);
 void gastro_vec4_print(gastro_vec4 v);
