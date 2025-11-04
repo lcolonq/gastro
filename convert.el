@@ -18,7 +18,7 @@
       (idxs (--mapcat (-map (lambda (s) (- (string-to-number s) 1)) (cdr (s-split " " it))) (s-lines si))))
     (with-temp-buffer
       (insert "static void draw_model(gastro_ctx *ctx, gastro_program *p) {\n")
-      (insert "    static gastro_fix64 verts[] = {\n");
+      (insert "    static gastro_fix verts[] = {\n");
       (insert (s-join ",\n" (-map #'g/fix-from-double verts))) (insert "\n")
       (insert "    };\n");
       (insert "    static i64 idxs[] = {\n");
@@ -56,7 +56,7 @@
       (allverts (apply #'-concat (reverse vs))))
     (with-temp-buffer
       (insert "static void draw_model(gastro_ctx *ctx, gastro_program *p) {\n")
-      (insert "    static gastro_fix64 verts[] = {\n");
+      (insert "    static gastro_fix verts[] = {\n");
       (insert (s-join ",\n" (-map #'g/fix-from-double allverts))) (insert "\n")
       (insert "    };\n");
       (insert "    static i64 idxs[] = {\n");

@@ -1,6 +1,6 @@
 #include "trig.h"
 
-static gastro_fix64 SIN_TABLE[256] = {
+static gastro_fix SIN_TABLE[256] = {
     0x0,
     0x648,
     0xc8f,
@@ -259,10 +259,10 @@ static gastro_fix64 SIN_TABLE[256] = {
     (i64) 0xfffffffffffff9b8
 };
 
-gastro_fix64 gastro_sin(u8 turns) {
+gastro_fix gastro_sin(u8 turns) {
     return SIN_TABLE[turns];
 }
 
-gastro_fix64 gastro_cos(u8 turns) {
+gastro_fix gastro_cos(u8 turns) {
     return SIN_TABLE[(u8) (turns + 64)];
 }

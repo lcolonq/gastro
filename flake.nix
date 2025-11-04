@@ -26,6 +26,7 @@
           };
           devShells.default = pkgs.mkShell {
             hardeningDisable = ["all"];
+            NIX_ENFORCE_NO_NATIVE = "";
             buildInputs = [
               pkgs.clang
               pkgs.raylib
